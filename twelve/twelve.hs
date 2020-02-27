@@ -40,3 +40,16 @@ module Twelve where
         where
             vovels = filter isVowel s
 
+    newtype Word' =
+        Word' String
+        deriving (Eq, Show)
+
+    isConsonant a = (not . isVowel) a
+
+    mkWord :: String -> Maybe Word'
+    mkWord word = if vowelCount > consonantCount then Just (Word' word) else Nothing
+        where 
+            vowelCount = countVowels word
+            consonantCount = (toInteger (length word)) - vowelCount
+
+
