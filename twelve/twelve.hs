@@ -75,3 +75,74 @@ module Twelve where
         where
             converter 0  = Zero
             converter i  = Succ $ converter $ i - 1
+
+    -- >>> isJust (Just 1)
+    -- True
+    -- >>> isJust Nothing
+    -- False
+    isJust :: Maybe a -> Bool
+    isJust v = case v of Nothing -> False
+                         (Just _) -> True
+
+    -- >>> isNothing (Just 1)
+    -- False
+    -- >>> isNothing Nothing
+    -- True
+    isNothing :: Maybe a -> Bool
+    isNothing v = case v of Nothing -> True
+                            (Just _) -> False
+
+    -- >>> mayybee 0 (+1) Nothing
+    -- 0
+    -- >>> mayybee 0 (+1) (Just 1)
+    -- 2
+    mayybee :: b -> (a -> b) -> Maybe a -> b
+    mayybee init _ Nothing = init
+    mayybee init cb (Just v) = cb v
+
+    -- Try writing it in terms of the maybe catamorphism
+
+    -- >>> fromMaybe 0 Nothing
+    -- 0
+    -- >>> fromMaybe 0 (Just 1)
+    -- 1
+    fromMaybe :: a -> Maybe a -> a
+    fromMaybe i m = mayybee i id m
+
+    -- >>> listToMaybe [1, 2, 3]
+    -- Just 1
+    -- >>> listToMaybe []
+    -- Nothing
+    listToMaybe :: [a] -> Maybe a
+    listToMaybe [] = Nothing
+    listToMaybe (x:_) = Just x
+
+    -- >>> maybeToList (Just 1)
+    -- [1]
+    -- >>> maybeToList Nothing
+    -- []
+    maybeToList :: Maybe a -> [a]
+    maybeToList Nothing = []
+    maybeToList (Just v) = [v]
+
+    -- >>> catMaybes [Just 1, Nothing, Just 2]
+    -- [1, 2]
+    -- >>> catMaybes [Nothing, Nothing, Nothing]
+    -- []
+    catMaybes :: [Maybe a] -> [a]
+    catMaybes l = map (\(Just v) -> v) filtered
+        where
+            filterF Nothing = False
+            filterF (Just _) = True
+            filtered = filter filterF l
+
+    -- >>> flipMaybe [Just 1, Just 2, Just 3]
+    -- Just [1, 2, 3]
+    -- >>> flipMaybe [Just 1, Nothing, Just 3]
+    -- Nothing
+    flipMaybe :: [Maybe a] -> Maybe [a]
+    flipMaybe l = if isFalsy then Nothing else Just $ map (\(Just v) -> v) l
+        where
+            isFalsy = length (filter filterF l) /= 0
+            filterF Nothing = True
+            filterF _ = False
