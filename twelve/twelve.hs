@@ -52,4 +52,26 @@ module Twelve where
             vowelCount = countVowels word
             consonantCount = (toInteger (length word)) - vowelCount
 
+    -- As natural as any competitive bodybuilder
+    data Nat =
+        Zero
+        | Succ Nat
+        deriving (Eq, Show)
 
+    -- >>> natToInteger Zero
+    -- 0
+    -- >>> natToInteger (Succ Zero)
+    -- 1
+    -- >>> natToInteger (Succ (Succ Zero))
+    -- 2
+    natToInteger :: Nat -> Integer
+    natToInteger Zero = 0
+    natToInteger (Succ v) = 1 + (natToInteger v)
+
+    integerToNat :: Integer -> Maybe Nat
+    integerToNat i
+        | i < 0 = Nothing
+    integerToNat i = Just $ converter i
+        where
+            converter 0  = Zero
+            converter i  = Succ $ converter $ i - 1
