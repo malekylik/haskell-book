@@ -146,3 +146,39 @@ module Twelve where
             isFalsy = length (filter filterF l) /= 0
             filterF Nothing = True
             filterF _ = False
+
+    -- Small library for Either
+    lefts' :: [Either a b] -> [a]
+    lefts' xs = map (\(Left v) -> v) filtered
+        where
+            filtered = filter filteredFunc xs
+            filteredFunc x = case x of (Right _) -> False
+                                       (Left _)  -> True
+
+    rights' :: [Either a b] -> [b]
+    rights' xs = map (\(Right v) -> v) filtered
+        where
+            filtered = filter filteredFunc xs
+            filteredFunc x = case x of (Right _) -> True
+                                       (Left _)  -> False
+
+    partitionEithers' :: [Either a b] -> ([a], [b])
+    partitionEithers' xs = (map (\(Left x) -> x) lefts, map (\(Right x) -> x) rights)
+        where
+            rights = filter filteredLeft xs
+            lefts  = filter filteredRight xs
+            filteredRight x = case x of (Right _) -> False
+                                        (Left _)  -> True
+            filteredLeft x  = case x of (Right _) -> True
+                                        (Left _)  -> False
+
+    eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
+    eitherMaybe' _ (Left v) = Nothing
+    eitherMaybe' f (Right v) = Just $ f v
+
+    either' :: (a -> c) -> (b -> c) -> Either a b -> c
+    either' f _ (Left a)  = f a
+    either' _ f (Right a) = f a
+
+    eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
+    eitherMaybe'' f x = either' (\_ -> Nothing) (\x -> Just $ f x) x
