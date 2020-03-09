@@ -182,3 +182,17 @@ module Twelve where
 
     eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
     eitherMaybe'' f x = either' (\_ -> Nothing) (\x -> Just $ f x) x
+
+    -- Write your own iterate and unfoldr
+    myIterate :: (a -> a) -> a -> [a]
+    myIterate f i = [f i] ++ (myIterate f $ f i)
+
+    myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+    myUnfoldr f i = (getValueA value) ++ (myUnfoldr f $ getValueB value)
+        where
+            value = f i
+            getValueA (Just (v, _)) = [v]
+            getValueA Nothing = []
+            getValueB (Just (_, v)) = v
+            getValueB Nothing = i
+
