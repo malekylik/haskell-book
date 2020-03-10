@@ -200,3 +200,20 @@ module Twelve where
     betterIterate f x = myUnfoldr updateF x
         where updateF b = Just (b, f b)
 
+
+    -- Finally something other than a list!
+
+    data BinaryTree a = Leaf | Node (BinaryTree a) a (BinaryTree a) deriving (Eq, Ord, Show)
+
+    unfoldTree :: (a -> Maybe (a, b, a)) -> a -> BinaryTree b
+    unfoldTree f i = case v of
+                        Nothing -> Leaf
+                        (Just (l1, v, l2)) -> Node (unfoldTree f l1) v (unfoldTree f l2)
+        where v = f i
+
+    treeBuild :: Integer -> BinaryTree Integer
+    treeBuild n = go 0
+        where
+            go v
+                | v == n = Leaf
+                | otherwise = Node (go (v + 1)) v (go (v + 1))
