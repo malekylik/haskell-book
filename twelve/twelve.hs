@@ -196,3 +196,7 @@ module Twelve where
             getValueB (Just (_, v)) = v
             getValueB Nothing = i
 
+    betterIterate :: (a -> a) -> a -> [a]
+    betterIterate f x = myUnfoldr updateF x
+        where updateF b = Just (b, f b)
+
